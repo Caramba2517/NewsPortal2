@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import os
+import os, sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,10 +24,13 @@ SECRET_KEY = 'django-insecure-socola-(d4t_f*r&v@0slmmp3^ho37h&%znr#du3u+6atxc!$c
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+if "celery" in sys.argv[0]:
+    DEBUG = False
+
 
 ALLOWED_HOSTS = []
 
-
+CELERY_IMPORTS = 'news.tasks'
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']

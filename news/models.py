@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 
 
+
 class Status(models.TextChoices):
     POST = 'PO', 'Post'
     NEWS = 'NE', 'News'
@@ -61,13 +62,14 @@ class Post(models.Model):
 
     def preview(self):
         self.content = self.content[0:125] + '...'
-        return self.content
+        return f'Заголовок:{self.headline}, Текст: {self.content}'
 
     def __str__(self):
         return f'{self.content}'
 
     def get_absolute_url(self):
         return f'{self.id}'
+
 
 
 class PostCategory(models.Model):

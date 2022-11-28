@@ -2,12 +2,17 @@ from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .models import Post, Author, Category, PostCategory, User
 from .filters import PostFilter, CategoryFilter
-from datetime import datetime
+from datetime import datetime, timedelta
 from .forms import PostForm, CategoryForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
+from django.http import HttpResponse
+
+from celery.utils.log import get_logger
+
+logger = get_logger(__name__)
 
 
 # Create your views here.
@@ -34,6 +39,8 @@ class PostList(ListView):
         context['form'] = PostForm()
         context['filterset'] = self.filterset
         return context
+
+
 
 
 class PostDetail(DetailView):
