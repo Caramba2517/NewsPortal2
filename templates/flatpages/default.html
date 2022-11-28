@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+
+
+<div class="intro">
+    <div class="container">
+        <div class="intro__iner">
+            <a class="button" href="/news/subscribe/">Оформить подписку</a>
+        </div>
+    </div>
+</div>
+
+<header class="header">
+    <div class="container">
+        <div class="header__iner">
+            <div class="header__logo">Новостной портал</div>
+
+            <nav class="nav">
+                <a class="nav__link" href="/news/">Новости</a>
+                <a class="nav__link" href="/about/">О нас</a>
+                <a class="nav__link" href="/contacts/">Контакты</a>
+                <a class="nav__link" href="/accounts/profile/">Профиль</a>
+            </nav>
+
+        </div>
+    </div>
+</header>
+
+
+</body>
+</html>
+
+<!-- Page content-->
+<div class="container">
+    <div class="row">
+           {% block content %}
+           {{ flatpage.content }}
+           {% endblock content %}
+   </div>
+</div>
+
+
+
+

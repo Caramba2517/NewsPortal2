@@ -1,0 +1,65 @@
+.list-box {
+  font-family: 'Montserrat', sans-serif;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  width: 400px;
+}
+.list-box label {
+  padding: 10px;
+  border: 1px solid rgba(255, 0, 21, 0.69);
+  display: block;
+  cursor: pointer;
+}
+.list-box label span:last-child {
+  display: none;
+}
+.list-box ul {
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  display: none;
+}
+.list-box ul li {
+  cursor: pointer;
+  padding: 10px;
+}
+.list-box ul li:hover {
+  background-color: rgba(255, 0, 21, 0.69);
+}
+.list-box input:checked ~ ul {
+  display: block;
+}
+.list-box input:checked ~ label span:first-child {
+  display: none;
+}
+.list-box input:checked ~ label span:last-child {
+  display: block;
+}
+
+
+
+
+------------------------------------
+
+
+<div class="list-box">
+  <input type="checkbox" hidden id="some-id" />
+  <label for="some-id"><span>Поиск</span><span>Скрыть</span></label>
+  <ul>
+     <h5>Поиск новостей:</h5>
+        <form action="" method="get">
+
+        {{ filterset.form.as_p }}
+
+        <input type="submit" value="Найти" />
+        </form>
+  </ul>
+</div>

@@ -1,0 +1,69 @@
+{% extends 'flatpages/default.html' %}
+{% block content %}
+{% load custom_filters %}
+{% load custom_tags %}
+<body>
+<div class="name">
+    <h3>Все новости</h3>
+    <div class="finder"
+        <h5>Поиск</h5>
+
+        <form action="" method="get">
+            {{ filterset.form.as_p }}
+            <input type="submit" value="Найти" />
+        </form>
+
+    </div>
+    <hr>
+
+</div>
+
+
+
+
+{% if posts %}
+    {% for post in posts%}
+        <div class="post-wrap">
+            <div class="post-item">
+                <div class="post-item-wrap">
+                    <a href="/news/{{post.get_absolute_url}}" class="post-link">
+                        <h3 class="post-title">{{ post.headline|Censor }}</h3>
+                        <p class="post-content">{{ post.content|truncatewords:20|Censor }}</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <h2>Новостей нет!</h2>
+{% endif %}
+
+<div class="paginator">
+    {% if page_obj.has_previous %}
+        <a href="?{% url_replace page=1 %}">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+        {% endif %}
+    {% endif %}
+
+
+    {{ page_obj.number }}
+
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+        {% if paginator.num_pages != page_obj.next_page_number %}
+            ...
+        <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+    {% endif %}
+    <hr>
+</div>
+
+
+
+
+</body>
+
+{% endblock content %}
