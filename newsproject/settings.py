@@ -9,12 +9,137 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import os, sys
+import os
 from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'style': '{',
+    # Формат
+    'formatters': {
+        'simple': {  # симпл мэс
+            'format': '%(asctime)-8s %(levelname)-8s %(message)s'
+            # время возникновения сообщения, уровень логирования, сообщение
+        },
+        'advanced_path': {  # WARNING
+            'format': '%(asctime)-8s %(levelname)-8s %(pathname)-8s %(message)s'
+            # время возникновения сообщения, уровень логирования, путь к источнику события, сообщение
+        },
+        'advanced_path_exc': {  # ERROR и CRITICAL
+            'format': '%(asctime)-8s %(levelname)-8s %(pathname)-8s %(exc_info)-8s %(message)s'
+            # время возникновения сообщения, уровень логирования, путь к источнику события, стэк ошибки, сообщение
+        },
+        'advanced_module': {  # general.log, уровень INFO
+            'format': '%(asctime)-8s %(levelname)-8s %(module)-8s %(message)s'
+            # время возникновения сообщения, уровень логирования, модуль в котором возникло сообщение, сообщение
+        },
+    },
+    # Фильтры
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+    # Хэндлеры
+    'handlers': {
+        'console_debug': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'console_warning': {
+            'level': 'WARNING',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'advanced_path'
+        },
+        'console_error': {
+            'level': 'ERROR',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'advanced_path_exc'
+        },
+        # general.log
+        'file_general': {
+            'level': 'INFO',
+            'filters': ['require_debug_false'],
+            'class': 'logging.FileHandler',
+            'formatter': 'advanced_module',
+            'filename': 'general.log'
+        },
+        # errors.log
+        'file_errors': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'advanced_path_exc',
+            'filename': 'errors.log',
+        },
+        # security.log
+        'file_security': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'advanced_module',
+            'filename': 'security.log'
+        },
+        # Почта
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'advanced_path'
+        },
+    },
+    # Регистраторы
+    'loggers': {
+        # django
+        'django': {
+            'handlers': ['console_debug', 'console_warning', 'console_error', 'file_general'],
+            'level': 'DEBUG',
+            'propagate': 'True',
+        },
+        # django.request
+        'django.request': {
+            'handlers': ['file_errors', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': 'True',
+        },
+        # django.server
+        'django.server': {
+            'handlers': ['file_errors', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': 'True',
+        },
+        # django.template
+        'django.template': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': 'True',
+        },
+        # django.db_backends
+        'django.db_backends': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': 'True',
+        },
+        # django.security
+        'django.security': {
+            'handlers': ['file_security'],
+            'level': 'INFO',
+            'propagate': 'True',
+        },
+    },
+}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -23,12 +148,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-socola-(d4t_f*r&v@0slmmp3^ho37h&%znr#du3u+6atxc!$c'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-if "celery" in sys.argv[0]:
-    DEBUG = False
+DEBUG = False
 
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 CELERY_IMPORTS = 'news.tasks'
 CELERY_BROKER_URL = 'redis://localhost:6379'
@@ -92,7 +214,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'newsproject.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -110,7 +231,6 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -130,7 +250,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -141,7 +260,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -170,3 +288,12 @@ EMAIL_HOST_PASSWORD = 'fdhocbtlldpnfjkk'  # пароль от почты
 EMAIL_USE_SSL = True
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+CACHES = {
+    'default': {
+        'TIMEOUT': 60,
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+        # Указываем, куда будем сохранять кэшируемые файлы! Не забываем создать папку cache_files внутри папки с manage.py!
+    }
+}
